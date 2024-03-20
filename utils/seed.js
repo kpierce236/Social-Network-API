@@ -1,1 +1,39 @@
+// seedDB.js
+const mongoose = require('mongoose');
+const { userData, thoughtData } = require('./data');
+const { User, Thought } = require('./models');
+const { connectDB, disconnectDB } = require('./config/connection'); // Import Mongoose connection configuration
+
+const seedDatabase = async () => {
+  try {
+    // Connect to the database
+    await connectDB();
+
+    // Clear existing data
+    await User.deleteMany();
+    await Thought.deleteMany();
+
+    // Seed users
+    const createdUsers = await User.create(userData);
+
+    // Seed thoughts
+    for (let i = 0; i < thoughtData.length; i++) {
+      const user = createdUsers.find(user => user.username === thoughtData[i].username);
+      thoughtData[i].userId = user._id;
+      const thought = await Thought.create(thoughtData[i]);
+      user.thoughts.push(thought._id);
+      await user.save();
+    }
+
+    console.log('Database seeded successfully.');
+  } catch (error) {
+    console.error('Error seeding database:', error);
+  } finally {
+    // Disconnect from the database after seeding
+    await disconnectDB();
+  }
+};
+
+seedDatabase();
+
 
