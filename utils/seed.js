@@ -1,8 +1,8 @@
 // seedDB.js
 const mongoose = require('mongoose');
 const { userData, thoughtData } = require('./data');
-const { User, Thought } = require('./models');
-const { connectDB, disconnectDB } = require('./config/connection'); // Import Mongoose connection configuration
+const { User, Thought } = require('../models');
+const { connectDB, disconnectDB } = require('../config/connection'); // Import Mongoose connection configuration
 
 const seedDatabase = async () => {
   try {
