@@ -2,12 +2,12 @@
 const mongoose = require('mongoose');
 const { userData, thoughtData } = require('./data');
 const { User, Thought } = require('../models');
-const { connectDB, disconnectDB } = require('../config/connection'); // Import Mongoose connection configuration
+const { connect, connection } = require('../config/connection'); // Import Mongoose connection configuration
 
 const seedDatabase = async () => {
   try {
     // Connect to the database
-    await connectDB();
+    await connect();
 
     // Clear existing data
     await User.deleteMany();
@@ -30,7 +30,8 @@ const seedDatabase = async () => {
     console.error('Error seeding database:', error);
   } finally {
     // Disconnect from the database after seeding
-    await disconnectDB();
+    await mongoose.disconnect();
+    console.log("Disconnected")
   }
 };
 
