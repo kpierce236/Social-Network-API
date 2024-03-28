@@ -1,5 +1,5 @@
 // controllers/thoughtController.js
-const { Thought, User } = require('../models');
+const { Thought, User} = require('../models');
 
 const thoughtController = {
   async getAllThoughts(req, res) {
@@ -61,11 +61,7 @@ const thoughtController = {
       if (!deletedThought) {
         return res.status(404).json({ message: 'Thought not found' });
       }
-      // Remove thought from associated user's thoughts array
-      const user = await User.findById(deletedThought.userId);
-      user.thoughts = user.thoughts.filter(thoughtId => thoughtId.toString() !== req.params.thoughtId);
-      await user.save();
-      res.json({ message: 'Thought deleted' });
+      return res.status(200).json(deletedThought);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server Error' });
@@ -78,8 +74,19 @@ const thoughtController = {
       if (!thought) {
         return res.status(404).json({ message: 'Thought not found' });
       }
-      thought.reactions.push(req.body);
+  
+      // Create a new reaction object
+      const newReaction = {
+        reactionBody: req.body.reactionBody,
+        username: req.body.username,
+      };
+  
+      // Push the new reaction object into the reactions array of the thought
+      thought.reactions.push(newReaction);
+  
+      // Save the updated thought document
       await thought.save();
+  
       res.status(201).json(thought);
     } catch (error) {
       console.error(error);
@@ -89,18 +96,24 @@ const thoughtController = {
 
   async deleteReaction(req, res) {
     try {
-      const thought = await Thought.findById(req.params.thoughtId);
-      if (!thought) {
-        return res.status(404).json({ message: 'Thought not found' });
+      const reaction = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $pull: { reactions: { _id: req.params.reactionId } } },
+        { new: true }
+      );
+
+      if (!reaction) {
+        return res
+          .status(404)
+          .json({ message: "No thought or reaction found" });
       }
-      thought.reactions = thought.reactions.filter(reaction => reaction._id.toString() !== req.params.reactionId);
-      await thought.save();
-      res.json(thought);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server Error' });
+
+      return res.status(200).json(reaction);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
     }
-  }
+  },
 };
 
 module.exports = thoughtController;
