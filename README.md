@@ -65,7 +65,7 @@ Features of this application include the ability to create users/thoughts, find 
 
 Check out the application functionality in action: 
 
-*Click the gif to download the full video from Google Drive*
+*Click the gif to view the full video from Google Drive*
 
 [![Demo of the Application](images/demo.gif)](https://drive.google.com/file/d/1ybK6gS3WK2b2Q72avJJwmmtkudY68zP5/view)
 
