@@ -82,7 +82,7 @@ Check out the application functionality in action:
 
 - [Express.js](https://www.npmjs.com/package/express)
 - [Mongoose](https://www.npmjs.com/package/mongoose)
-- [.env](https://www.npmjs.com/package/dotenv)
+- [dotenv](https://www.npmjs.com/package/dotenv)
 - [Insomnia](https://insomnia.rest/)
 
 
