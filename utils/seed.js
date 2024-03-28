@@ -1,13 +1,15 @@
 // seedDB.js
+require('dotenv').config()
 const mongoose = require('mongoose');
 const { userData, thoughtData } = require('./data');
 const { User, Thought } = require('../models');
-const { connect, connection } = require('../config/connection'); // Import Mongoose connection configuration
+const { connect } = require('../config/connection'); // Import Mongoose connection configuration
+
 
 const seedDatabase = async () => {
   try {
     // Connect to the database
-    await connect();
+    await mongoose.connect(process.env.MONGODB_URI);
 
     // Clear existing data
     await User.deleteMany();
@@ -31,7 +33,6 @@ const seedDatabase = async () => {
   } finally {
     // Disconnect from the database after seeding
     await mongoose.disconnect();
-    console.log("Disconnected")
   }
 };
 
