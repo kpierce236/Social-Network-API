@@ -56,7 +56,7 @@ const userController = {
       if (!deletedUser) {
         return res.status(404).json({ message: 'User not found' });
       }
-      // Bonus: Remove associated thoughts
+      // Remove associated thoughts
       await Thought.deleteMany({ _id: { $in: deletedUser.thoughts } });
       res.json({ message: 'User and associated thoughts deleted' });
     } catch (error) {
@@ -83,16 +83,20 @@ const userController = {
 
   async removeFriend(req, res) {
     try {
-      const user = await User.findById(req.params.userId);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+      const friend = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: req.params.friendId } },
+        { new: true }
+      );
+
+      if (!friend) {
+        return res.status(404).json({ message: "Check user and friend ID" });
       }
-      user.friends = user.friends.filter(friend => friend.toString() !== req.params.friendId);
-      await user.save();
-      res.json(user);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server Error' });
+
+      return res.status(200).json(friend);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
     }
   }
 };
