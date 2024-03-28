@@ -1,6 +1,7 @@
 // models/Thought.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const reactionSchema = require("./Reaction");
 
 const thoughtSchema = new Schema({
     thoughtText: {
@@ -12,16 +13,12 @@ const thoughtSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        get: createdAtVal => dateFormat(createdAtVal)
     },
     username: {
         type: String,
         required: true
     },
-    reactions: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Reaction'
-    }]
+    reactions: [reactionSchema]
 }, {
     toJSON: {
         virtuals: true,
